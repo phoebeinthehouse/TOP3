@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta Ads Creative Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #141416;
+    --surface2: #1c1c1f;
+    --surface3: #242428;
+    --border: #2a2a2e;
+    --border2: #38383e;
+    --text: #f0f0f0;
+    --text2: #909098;
+    --text3: #55555e;
+    --accent: #c8f060;
+    --accent2: #7df0b0;
+    --accent3: #f0a060;
+    --red: #f06060;
+    --blue: #60a0f0;
+    --purple: #a060f0;
+
+    --p1: #c8f060;
+    --p2: #60e8b0;
+    --p3: #f0c060;
+    --p4: #c060f0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Pretendard', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Header ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,13,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .logo-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+    font-family: inherit;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+
+  .btn-ghost:hover {
+    background: var(--surface3);
+    color: var(--text);
+    border-color: var(--border2);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+
+  .btn-primary:hover {
+    background: #d8ff70;
+    transform: translateY(-1px);
+  }
+
+  /* ── Product Tabs ── */
+  .tabs-wrapper {
+    padding: 24px 32px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 4px;
+  }
+
+  .tab {
+    padding: 10px 20px;
+    border-radius: 10px 10px 0 0;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text2);
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+
+  .tab:hover { color: var(--text); }
+
+  .tab.active {
+    color: var(--text);
+    background: var(--surface2);
+  }
+
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0; right: 0;
+    height: 2px;
+    background: var(--tab-color, var(--accent));
+  }
+
+  .tab-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    background: var(--surface3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--text3);
+  }
+
+  .tab.active .tab-badge {
+    background: var(--tab-color, var(--accent));
+    color: #000;
+    font-weight: 600;
+  }
+
+  /* ── Main Layout ── */
+  main {
+    padding: 32px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-title h2 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .product-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--tab-color, var(--accent));
+    color: #000;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .filter-chip {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .filter-chip:hover, .filter-chip.active {
+    background: var(--surface3);
+    color: var(--text);
+    border-color: var(--border2);
+  }
+
+  .filter-chip.active {
+    border-color: var(--tab-color, var(--accent));
+    color: var(--tab-color, var(--accent));
+  }
+
+  /* ── Creative Grid ── */
+  .creative-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  /* ── Creative Card ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  .card-media {
+    position: relative;
+    aspect-ratio: 9/16;
+    background: var(--surface2);
+    overflow: hidden;
+    max-height: 220px;
+  }
+
+  .card-media video,
+  .card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .media-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .media-badge.video { background: rgba(96,160,240,0.9); color: #fff; }
+  .media-badge.image { background: rgba(200,240,96,0.9); color: #000; }
+
+  .rank-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .rank-1 { background: #FFD700; color: #000; }
+  .rank-2 { background: #C0C0C0; color: #000; }
+  .rank-3 { background: #CD7F32; color: #fff; }
+
+  .media-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--text3);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--surface2);
+  }
+
+  .media-placeholder:hover {
+    background: var(--surface3);
+    color: var(--text2);
+  }
+
+  .media-placeholder svg { opacity: 0.4; }
+
+  /* Card Body */
+  .card-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card-name {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text);
+    word-break: break-all;
+  }
+
+  /* Metrics */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .metric {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+
+  .metric-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text3);
+    margin-bottom: 4px;
+  }
+
+  .metric-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .metric-value.highlight {
+    color: var(--tab-color, var(--accent));
+  }
+
+  /* Comments */
+  .comments-section {
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    flex: 1;
+  }
+
+  .comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+    max-height: 160px;
+    overflow-y: auto;
+  }
+
+  .comments-list::-webkit-scrollbar { width: 4px; }
+  .comments-list::-webkit-scrollbar-track { background: transparent; }
+  .comments-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .comment-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .comment-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--surface3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    flex-shrink: 0;
+    color: var(--text2);
+  }
+
+  .comment-bubble {
+    background: var(--surface2);
+    border-radius: 4px 10px 10px 10px;
+    padding: 7px 10px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .comment-text {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text);
+    word-break: break-word;
+  }
+
+  .comment-meta {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 3px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .comment-delete {
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 10px;
+    padding: 0 4px;
+    transition: color 0.1s;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .comment-delete:hover { color: var(--red); }
+
+  .comment-input-wrap {
+    display: flex;
+    gap: 6px;
+  }
+
+  .comment-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 12px;
+    color: var(--text);
+    font-family: inherit;
+    resize: none;
+    transition: border-color 0.15s;
+    outline: none;
+    height: 34px;
+    line-height: 1.4;
+  }
+
+  .comment-input:focus {
+    border-color: var(--tab-color, var(--accent));
+  }
+
+  .comment-input::placeholder { color: var(--text3); }
+
+  .comment-send {
+    width: 34px;
+    height: 34px;
+    background: var(--tab-color, var(--accent));
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .comment-send:hover { opacity: 0.85; transform: scale(1.05); }
+
+  /* ── Add Card ── */
+  .add-card {
+    background: transparent;
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    min-height: 320px;
+    transition: all 0.2s;
+    color: var(--text3);
+  }
+
+  .add-card:hover {
+    border-color: var(--tab-color, var(--accent));
+    color: var(--tab-color, var(--accent));
+    background: rgba(200,240,96,0.03);
+  }
+
+  .add-card span { font-size: 13px; font-weight: 500; }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 520px;
+    overflow: hidden;
+    animation: modalIn 0.2s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-header h3 { font-size: 16px; font-weight: 600; }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    padding: 4px;
+    transition: color 0.1s;
+  }
+
+  .modal-close:hover { color: var(--text); }
+
+  .modal-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .form-input, .form-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--text);
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  .form-input:focus, .form-select:focus {
+    border-color: var(--tab-color, var(--accent));
+  }
+
+  .form-select option { background: var(--surface); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  /* ── Empty State ── */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text3);
+  }
+
+  .empty-state p { font-size: 14px; margin-top: 8px; }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* ── Top 3 Banner ── */
+  .top3-banner {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .top3-item {
+    flex: 1;
+    min-width: 200px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: border-color 0.2s;
+  }
+
+  .top3-item:hover { border-color: var(--border2); }
+
+  .top3-rank {
+    font-family: 'DM Mono', monospace;
+    font-size: 24px;
+    font-weight: 500;
+    min-width: 40px;
+    text-align: center;
+  }
+
+  .top3-info { flex: 1; min-width: 0; }
+
+  .top3-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .top3-stat {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 3px;
+  }
+
+  .top3-sales {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ── Media Preview Modal ── */
+  .preview-modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 640px;
+    overflow: hidden;
+    animation: modalIn 0.2s ease;
+  }
+
+  .preview-media {
+    max-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+  }
+
+  .preview-media video,
+  .preview-media img {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+  }
+
+  /* hidden section */
+  .product-section { display: none; }
+  .product-section.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Meta Ads · Creative Hub
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost" onclick="exportData()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      내보내기
+    </button>
+    <button class="btn btn-primary" onclick="openAddModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      소재 추가
+    </button>
+  </div>
+</header>
+
+<!-- Tabs -->
+<div class="tabs-wrapper">
+  <button class="tab active" style="--tab-color: var(--p1)" onclick="switchTab(0)" id="tab-0">
+    퓨어클렌징오일
+    <span class="tab-badge" id="badge-0">0</span>
+  </button>
+  <button class="tab" style="--tab-color: var(--p2)" onclick="switchTab(1)" id="tab-1">
+    갈락필링젤
+    <span class="tab-badge" id="badge-1">0</span>
+  </button>
+  <button class="tab" style="--tab-color: var(--p3)" onclick="switchTab(2)" id="tab-2">
+    글루타치온세럼
+    <span class="tab-badge" id="badge-2">0</span>
+  </button>
+  <button class="tab" style="--tab-color: var(--p4)" onclick="switchTab(3)" id="tab-3">
+    글루타치온패치
+    <span class="tab-badge" id="badge-3">0</span>
+  </button>
+</div>
+
+<!-- Main -->
+<main>
+  <!-- Product Sections -->
+  <div id="section-0" class="product-section active" style="--tab-color: var(--p1)"></div>
+  <div id="section-1" class="product-section" style="--tab-color: var(--p2)"></div>
+  <div id="section-2" class="product-section" style="--tab-color: var(--p3)"></div>
+  <div id="section-3" class="product-section" style="--tab-color: var(--p4)"></div>
+</main>
+
+<!-- Add Modal -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>소재 추가</h3>
+      <button class="modal-close" onclick="closeModal('addModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">소재명</label>
+        <input class="form-input" id="f-name" placeholder="소재 이름 입력" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">제품</label>
+          <select class="form-select" id="f-product">
+            <option value="0">퓨어클렌징오일</option>
+            <option value="1">갈락필링젤</option>
+            <option value="2">글루타치온세럼</option>
+            <option value="3">글루타치온패치</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">미디어 타입</label>
+          <select class="form-select" id="f-type" onchange="toggleMediaInputs()">
+            <option value="video">동영상</option>
+            <option value="image">이미지</option>
+            <option value="none">없음</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" id="f-url-group">
+        <label class="form-label">미디어 URL</label>
+        <input class="form-input" id="f-url" placeholder="https://..." />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">판매량</label>
+          <input class="form-input" id="f-sales" type="number" placeholder="0" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">광고비 (₩)</label>
+          <input class="form-input" id="f-spend" type="number" placeholder="0" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">CPA (₩)</label>
+        <input class="form-input" id="f-cpa" type="number" placeholder="자동계산 또는 직접입력" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('addModal')">취소</button>
+      <button class="btn btn-primary" onclick="addCreative()">추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal-overlay" id="previewModal">
+  <div class="preview-modal">
+    <div class="modal-header">
+      <h3 id="previewTitle">미디어 미리보기</h3>
+      <button class="modal-close" onclick="closeModal('previewModal')">×</button>
+    </div>
+    <div class="preview-media" id="previewContent"></div>
+  </div>
+</div>
+
+<script>
+const PRODUCTS = ['퓨어클렌징오일', '갈락필링젤', '글루타치온세럼', '글루타치온패치'];
+const COLORS = ['var(--p1)', 'var(--p2)', 'var(--p3)', 'var(--p4)'];
+
+let activeTab = 0;
+let data = loadData();
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem('meta-ads-data');
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  // default empty
+  return { creatives: [] };
+}
+
+function saveData() {
+  localStorage.setItem('meta-ads-data', JSON.stringify(data));
+}
+
+function switchTab(idx) {
+  activeTab = idx;
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.querySelectorAll('.product-section').forEach((s,i) => s.classList.toggle('active', i===idx));
+}
+
+function toggleMediaInputs() {
+  const type = document.getElementById('f-type').value;
+  document.getElementById('f-url-group').style.display = type === 'none' ? 'none' : '';
+}
+
+function openAddModal(productIdx) {
+  if (productIdx !== undefined) {
+    document.getElementById('f-product').value = productIdx;
+  } else {
+    document.getElementById('f-product').value = activeTab;
+  }
+  document.getElementById('addModal').classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function addCreative() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { alert('소재명을 입력해주세요'); return; }
+
+  const productIdx = parseInt(document.getElementById('f-product').value);
+  const type = document.getElementById('f-type').value;
+  const url = document.getElementById('f-url').value.trim();
+  const sales = parseInt(document.getElementById('f-sales').value) || 0;
+  const spend = parseInt(document.getElementById('f-spend').value) || 0;
+  let cpa = parseInt(document.getElementById('f-cpa').value) || 0;
+  if (!cpa && sales > 0 && spend > 0) cpa = Math.round(spend / sales);
+
+  data.creatives.push({
+    id: Date.now(),
+    productIdx,
+    name,
+    type,
+    url,
+    sales,
+    spend,
+    cpa,
+    comments: []
+  });
+
+  saveData();
+  render();
+  closeModal('addModal');
+  clearForm();
+  switchTab(productIdx);
+}
+
+function clearForm() {
+  ['f-name','f-url','f-sales','f-spend','f-cpa'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-type').value = 'video';
+  document.getElementById('f-url-group').style.display = '';
+}
+
+function deleteCreative(id) {
+  if (!confirm('이 소재를 삭제할까요?')) return;
+  data.creatives = data.creatives.filter(c => c.id !== id);
+  saveData();
+  render();
+}
+
+function addComment(creativeId) {
+  const input = document.getElementById('ci-' + creativeId);
+  const text = input.value.trim();
+  if (!text) return;
+
+  const creative = data.creatives.find(c => c.id === creativeId);
+  if (!creative) return;
+  if (!creative.comments) creative.comments = [];
+
+  creative.comments.push({
+    id: Date.now(),
+    text,
+    time: new Date().toLocaleString('ko-KR', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' })
+  });
+
+  input.value = '';
+  saveData();
+  render();
+}
+
+function deleteComment(creativeId, commentId) {
+  const creative = data.creatives.find(c => c.id === creativeId);
+  if (!creative) return;
+  creative.comments = creative.comments.filter(c => c.id !== commentId);
+  saveData();
+  render();
+}
+
+function openPreview(url, type, name) {
+  document.getElementById('previewTitle').textContent = name;
+  const content = document.getElementById('previewContent');
+  if (type === 'video') {
+    content.innerHTML = `<video src="${url}" controls autoplay style="max-width:100%;max-height:70vh"></video>`;
+  } else {
+    content.innerHTML = `<img src="${url}" style="max-width:100%;max-height:70vh;object-fit:contain" />`;
+  }
+  document.getElementById('previewModal').classList.add('open');
+}
+
+function fmtNum(n) {
+  return n ? n.toLocaleString('ko-KR') : '—';
+}
+
+function renderTop3(creatives) {
+  const sorted = [...creatives].sort((a,b) => (b.sales||0) - (a.sales||0)).slice(0,3);
+  if (sorted.length === 0) return '';
+  const medals = ['🥇','🥈','🥉'];
+  const colors = ['#FFD700','#C0C0C0','#CD7F32'];
+  return `<div class="top3-banner">
+    ${sorted.map((c,i) => `
+      <div class="top3-item">
+        <div class="top3-rank" style="color:${colors[i]}">${medals[i]}</div>
+        <div class="top3-info">
+          <div class="top3-name" title="${esc(c.name)}">${esc(c.name)}</div>
+          <div class="top3-stat">광고비 ₩${fmtNum(c.spend)} · CPA ₩${fmtNum(c.cpa)}</div>
+        </div>
+        <div class="top3-sales" style="color:var(--tab-color)">${fmtNum(c.sales)}<span style="font-size:11px;color:var(--text3);margin-left:2px">건</span></div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function renderCard(c) {
+  let mediaHtml = '';
+  if (c.type === 'video' && c.url) {
+    mediaHtml = `
+      <div class="card-media" onclick="openPreview('${esc(c.url)}','video','${esc(c.name)}')" style="cursor:pointer">
+        <video src="${esc(c.url)}" muted style="width:100%;height:100%;object-fit:cover" preload="metadata"></video>
+        <span class="media-badge video">▶ 동영상</span>
+      </div>`;
+  } else if (c.type === 'image' && c.url) {
+    mediaHtml = `
+      <div class="card-media" onclick="openPreview('${esc(c.url)}','image','${esc(c.name)}')" style="cursor:pointer">
+        <img src="${esc(c.url)}" alt="${esc(c.name)}" loading="lazy" />
+        <span class="media-badge image">이미지</span>
+      </div>`;
+  } else {
+    mediaHtml = `
+      <div class="card-media">
+        <div class="media-placeholder">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>미디어 없음</span>
+        </div>
+      </div>`;
+  }
+
+  const commentsHtml = (c.comments||[]).map(cm => `
+    <div class="comment-item">
+      <div class="comment-avatar">N</div>
+      <div class="comment-bubble">
+        <div class="comment-text">${esc(cm.text)}</div>
+        <div class="comment-meta">${cm.time}</div>
+      </div>
+      <button class="comment-delete" onclick="deleteComment(${c.id},${cm.id})" title="삭제">✕</button>
+    </div>
+  `).join('');
+
+  return `
+    <div class="card" id="card-${c.id}">
+      ${mediaHtml}
+      <div class="card-body">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div class="card-name">${esc(c.name)}</div>
+          <button onclick="deleteCreative(${c.id})" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0;flex-shrink:0" title="소재 삭제">🗑</button>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">판매량</div>
+            <div class="metric-value highlight">${fmtNum(c.sales)}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">광고비</div>
+            <div class="metric-value">₩${fmtNum(c.spend)}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">CPA</div>
+            <div class="metric-value">₩${fmtNum(c.cpa)}</div>
+          </div>
+        </div>
+        <div class="comments-section">
+          <div class="comments-list" id="cl-${c.id}">
+            ${commentsHtml || '<div style="font-size:12px;color:var(--text3);padding:4px 0">아직 코멘트가 없어요</div>'}
+          </div>
+          <div class="comment-input-wrap">
+            <input class="comment-input" id="ci-${c.id}" placeholder="코멘트 추가..." onkeydown="if(event.key==='Enter')addComment(${c.id})" />
+            <button class="comment-send" onclick="addComment(${c.id})">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function esc(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+function render() {
+  PRODUCTS.forEach((prod, idx) => {
+    const section = document.getElementById('section-' + idx);
+    const badge = document.getElementById('badge-' + idx);
+    const creatives = data.creatives.filter(c => c.productIdx === idx);
+    badge.textContent = creatives.length;
+
+    const sorted = [...creatives].sort((a,b) => (b.sales||0) - (a.sales||0));
+
+    section.innerHTML = `
+      <div class="section-header">
+        <div class="section-title">
+          <h2>${prod}</h2>
+          <span class="product-pill">TOP 3 · 판매량순</span>
+        </div>
+        <button class="btn btn-ghost" onclick="openAddModal(${idx})">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          소재 추가
+        </button>
+      </div>
+      ${renderTop3(creatives)}
+      <div class="creative-grid">
+        ${sorted.map((c, i) => {
+          const ranked = i < 3 ? `<div class="rank-badge rank-${i+1}">${i+1}</div>` : '';
+          return renderCard(c).replace('</div>\n      <div class="card-body">', `${ranked}</div>\n      <div class="card-body">`);
+        }).join('')}
+        ${creatives.length === 0 ? `<div class="empty-state"><div style="font-size:32px">📭</div><p>아직 소재가 없어요. 추가해보세요!</p></div>` : ''}
+        <div class="add-card" onclick="openAddModal(${idx})">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>소재 추가</span>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function exportData() {
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'meta-ads-data.json';
+  a.click();
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => {
+    if (e.target === el) {
+      el.classList.remove('open');
+      const vid = el.querySelector('video');
+      if (vid) vid.pause();
+    }
+  });
+});
+
+render();
+</script>
+</body>
+</html>
